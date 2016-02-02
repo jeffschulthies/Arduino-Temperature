@@ -24,11 +24,15 @@ void setup() {
 
 
 void loop() {    
-  int sensorValue = analogRead(A0);
+  int sensorValue = analogRead(pot_pin);
   pot_val = analogRead(pot_pin);
-  Serial.println(sensorValue);
+  //Serial.println(sensorValue);
+  //Test Value
   //Serial.println(pot_val);
 
+  //Color and range value mapping
+  temperatureConversion(pot_val);
+  
   // Red
    if(950 <= pot_val){
     setRed();
@@ -85,7 +89,29 @@ void setBlue() {
   analogWrite(blue_pin, 255);
 }
 
+// Potentiomater input 0 - 1023
+// Converts that value to mV 
+double potentiometerToVoltage(int pot_value) {
+  double voltage;
+  return voltage = ((double)pot_value * 5 /1023) * 1000;
+}
 
+// Converts voltage in mV to Temperature
+void temperatureConversion(int pot_value) {
+  double temperature;
+  double voltage;
 
-
+  voltage = potentiometerToVoltage(pot_value);
+  
+  if (voltage > 750) {
+    temperature = 25 + ((voltage - 750) / 10);
+  } else if (voltage == 750) {
+    temperature = 25;
+  } else if(voltage < 750){
+    temperature = 25 + ((voltage - 750) / 10);
+  }
+  
+  Serial.print("Temperature: ");
+  Serial.println(temperature);
+} 
 
